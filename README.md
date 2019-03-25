@@ -1,4 +1,9 @@
-## Rest API
+## Codex Rest API library
+
+#### Installation
+```
+npm install -s codex-api-node
+```
 
 #### Getting started
 ```javascript
