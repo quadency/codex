@@ -1,4 +1,4 @@
-## Codex Rest API library
+## JS library wrapper for the CODEX API
 
 #### Installation
 ```
