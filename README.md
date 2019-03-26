@@ -2,7 +2,7 @@
 
 #### Installation
 ```
-npm install -s codex-api-node
+npm install -s @codex_one/codex-api-node
 ```
 
 #### Getting started
