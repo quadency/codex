@@ -39,8 +39,6 @@ function Codex(...params) {
         ? params[0]
         : {apiKey: params[0], apiSecret: params[1], baseUrl: params[2], logger: params[3]};
 
-    if(_.isEmpty(apiKey) || _.isEmpty(apiSecret))
-        throw new Error(`api keys are empty. Please add API Keys in parameters`);
 
     apiKeys.apiKey = apiKey;
     apiKeys.apiSecret = apiSecret;
