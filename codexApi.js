@@ -135,8 +135,7 @@ function Codex(...params) {
     const getMarkets = async () => {
         const requestParams = {apiKeys};
         const request = restApi.getMarketsRequest(requestParams);
-        const response = await executeCall(request);
-        return JSON.parse(response);
+        return  executeCall(request);
     };
 
     const getCurrencies = async () => {

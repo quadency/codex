@@ -226,7 +226,6 @@ function restApi() {
         const requestOptions = api2EndpointMap.markets;
 
         return {
-            json: false,
             method: requestOptions.method,
             url: `${baseUrlCoins}${requestOptions.route}`
         };
