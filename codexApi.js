@@ -135,8 +135,6 @@ function Codex(...params) {
     };
 
     const getMarkets = async () => {
-        if (_.isEmpty(apiKeys.apiKey) || _.isEmpty(apiKeys.apiSecret))
-            throw new Error(`api keys are empty. Please call setApiKeys(apiKey, apiSecret)`);
         const requestParams = {apiKeys};
         const request = restApi.getMarketsRequest(requestParams);
         const response = await executeCall(request);

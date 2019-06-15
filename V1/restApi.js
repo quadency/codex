@@ -224,19 +224,8 @@ function restApi() {
 
     const getMarketsRequest = (params) => {
         const requestOptions = api2EndpointMap.markets;
-        const {tonce = nanoTime(), apiKeys} = params;
-        const body = JSON.stringify({});
-        const payload = `${body}${requestOptions.route}${tonce}`;
-        const signature = createNaclSignature(payload, apiKeys.apiSecret);
 
         return {
-            headers: {
-                'X-Tonce': tonce,
-                'X-Signature': signature,
-                'X-Public-Key': apiKeys.apiKey
-            },
-            json: false,
-            body,
             method: requestOptions.method,
             url: `${baseUrlCoins}${requestOptions.route}`
         };
