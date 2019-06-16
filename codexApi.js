@@ -42,6 +42,7 @@ function Codex(...params) {
   Codex.socketHeartbeatInterval = null;
 
   let wss = false;
+  let wsClient = null;
 
   const {apiKey, apiSecret, baseUrl = 'https://api.codex.one', logger = console.log} = params.length === 1
     ? params[0]
@@ -244,7 +245,7 @@ function Codex(...params) {
   };
 
   const startGetOrderBook = async (market) => {
-    if (!ws) {
+    if (!wsClient) {
       if (logger)
         logger(`Connection not open. Please call connect function`);
       return false;
@@ -258,7 +259,7 @@ function Codex(...params) {
   };
 
   const stopGetOrderBook = async (market) => {
-    if (!ws) {
+    if (!wsClient) {
       if (logger)
         logger(`Connection not open. Please call connect function`);
       return false;
@@ -274,7 +275,7 @@ function Codex(...params) {
   };
 
   const startGetTrades = async (market) => {
-    if (!ws) {
+    if (!wsClient) {
       if (logger)
         logger(`Connection not open. Please call connect function`);
       return false;
@@ -288,7 +289,7 @@ function Codex(...params) {
   };
 
   const stopGetTrades = async (market) => {
-    if (!ws) {
+    if (!wsClient) {
       if (logger)
         logger(`Connection not open. Please call connect function`);
       return false;
@@ -304,7 +305,7 @@ function Codex(...params) {
   };
 
   const startGetTickers = async () => {
-    if (!ws) {
+    if (!wsClient) {
       if (logger)
         logger(`Connection not open. Please call connect function`);
       return false;
@@ -318,7 +319,7 @@ function Codex(...params) {
   };
 
   const stopGetTickers = async () => {
-    if (!ws) {
+    if (!wsClient) {
       if (logger)
         logger(`Connection not open. Please call connect function`);
       return false;
@@ -347,37 +348,37 @@ function Codex(...params) {
     const connectionUrl = url.parse(wsUrl);
     const address = connectionUrl.href;
 
-    ws = new WebSocket(address, {
+    wsClient = new WebSocket(address, {
       headers: {
         host: connectionUrl.host
       }
     });
 
-    ws.on('open', () => {
+    wsClient.on('open', () => {
       if (logger)
         logger('WS client is connected to', address);
       Codex.socketHeartbeatInterval = setInterval(() => {
-        ws.ping();
+        wsClient.ping();
       }, WS_PING_INTERVAL);
-      authProcessor(ws);
+      authProcessor(wsClient);
       send({
         type: wsMessageTypes.SUBSCRIBE,
         payload: {channels: Codex.subscriptions}
       })
     });
 
-    ws.on('error', (err) => {
+    wsClient.on('error', (err) => {
       if (logger)
         logger('WS error', err);
     });
 
-    ws.on('pong', () => {
+    wsClient.on('pong', () => {
       if (logger)
         logger('received pong message');
     });
 
-    ws.on('close', (code, reason) => {
-      ws = false;
+    wsClient.on('close', (code, reason) => {
+      wsClient = null;
       if (logger)
         logger('WS connection was closed', code, reason);
       if (Codex.socketHeartbeatInterval) clearInterval(Codex.socketHeartbeatInterval);
@@ -387,7 +388,7 @@ function Codex(...params) {
         }, WS_RECONNECT_INTERVAL);
       }
     });
-    ws.on('message', function (data) {
+    wsClient.on('message', function (data) {
       try {
         data = JSON.parse(data);
         if (data.data.msg === wsMessageTypes.API_TOKEN_AUTHORIZE_REQUESTED) {
@@ -401,12 +402,12 @@ function Codex(...params) {
           logger('Parse error: ' + error.message);
       }
     });
-    return ws;
+    return wsClient;
   };
 
   function send(data) {
     try {
-      ws.send(JSON.stringify(data));
+      wsClient.send(JSON.stringify(data));
     } catch (err) {
       if (logger)
         logger('error sending data via WS', err);
@@ -415,7 +416,7 @@ function Codex(...params) {
   }
 
   const disconnect = () => {
-    if (!ws) {
+    if (!wsClient) {
       if (logger)
         logger(`Connection not open. Please call connect function`);
       return false;
@@ -423,7 +424,7 @@ function Codex(...params) {
     try {
       if (logger)
         logger('WS Client is disconnecting');
-      ws.close(4000);
+      wsClient.close(4000);
       if (logger)
         logger('WS Client is disconnected');
     } catch (err) {
