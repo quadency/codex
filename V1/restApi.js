@@ -18,6 +18,10 @@ const api2EndpointMap = {
     },
     getTrades: {
         method: 'GET',
+        route: '/trades_history'
+    },
+    getMyTrades: {
+        method: 'GET',
         route: '/trades_history/my'
     },
     getOrders: {
@@ -140,6 +144,19 @@ function restApi() {
 
     const getGetTradesRequest = (params) => {
         const requestOptions = api2EndpointMap.getTrades;
+        const {limit, from_time, to_time, page_token, market} = params;
+        const body = querystring.stringify({
+            limit, from_time, to_time, page_token, market,
+        });
+
+        return {
+            method: requestOptions.method,
+            url: `${baseUrl}${requestOptions.route}?${body}`
+        };
+    };
+
+    const getGetMyTradesRequest = (params) => {
+        const requestOptions = api2EndpointMap.getMyTrades;
         const {tonce = nanoTime(), limit, from_time, to_time, page_token, market, side, apiKeys} = params;
 
         const body = querystring.stringify({
@@ -380,6 +397,7 @@ function restApi() {
         getCancelOrderRequest,
         getCancelOrdersRequest,
         getGetTradesRequest,
+        getGetMyTradesRequest,
         getGetOrdersRequest,
         getPlaceOrdersRequest,
         getWithdrawRequest,

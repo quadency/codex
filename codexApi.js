@@ -103,11 +103,17 @@ function Codex(...params) {
     return JSON.parse(response);
   };
 
-  const getTrades = async (limit, from_time, to_time, page_token = undefined, market = undefined, side = undefined) => {
+  const getTrades = async (limit, from_time, to_time, market, page_token = undefined) => {
+    const requestParams = {limit, from_time, to_time, page_token, market};
+    const request = restApi.getGetTradesRequest(requestParams);
+    return executeCall(request);
+  };
+
+  const getMyTrades = async (limit, from_time, to_time, page_token = undefined, market = undefined, side = undefined) => {
     if (_.isEmpty(apiKeys.apiKey) || _.isEmpty(apiKeys.apiSecret))
       throw new Error(`api keys are empty. Please call setApiKeys(apiKey, apiSecret)`);
     const requestParams = {limit, from_time, to_time, page_token, market, side, apiKeys};
-    const request = restApi.getGetTradesRequest(requestParams);
+    const request = restApi.getGetMyTradesRequest(requestParams);
     const response = await executeCall(request);
     return JSON.parse(response);
   };
@@ -429,6 +435,7 @@ function Codex(...params) {
     cancelOrder,
     cancelOrders,
     getTrades,
+    getMyTrades,
     getOrders,
     getInfo,
     placeOrders,
