@@ -134,7 +134,14 @@ function Codex(...params) {
     const requestParams = {apiKeys};
     const request = restApi.getBalancesRequest(requestParams);
     const response = await executeCall(request);
-    return JSON.parse(response);
+    const balances = JSON.parse(response);
+
+    return balances.map(assetBalance=>({
+      asset: commonCurrencies[assetBalance.currency] ? commonCurrencies[assetBalance.currency] : assetBalance.currency,
+      free: (parseFloat(assetBalance.balance) - parseFloat(assetBalance.locked)).toString(),
+      used: assetBalance.locked,
+      total: assetBalance.balance,
+    }));
   };
 
   const getTicker = async () => {
