@@ -161,6 +161,10 @@ function Codex(...params) {
         quote,
         base,
         info: cur,
+        precision: {
+          amount: cur.base_precision,
+          price: cur.quote_precision,
+        },
       };
       return acc;
     }, {});
