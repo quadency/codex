@@ -232,6 +232,15 @@ function Codex(...params) {
     return JSON.parse(response);
   };
 
+  const bindAffiliate = async (referenceUUID) => {
+    if (_.isEmpty(apiKeys.apiKey) || _.isEmpty(apiKeys.apiSecret))
+      throw new Error(`api keys are empty. Please call setApiKeys(apiKey, apiSecret)`);
+    const requestParams = {referenceUUID, apiKeys};
+    const request = restApi.bindAffiliateLink(requestParams);
+    const response = await executeCall(request);
+    return JSON.parse(response);
+  }
+
   const sendSignature = (payload) => {
     if (logger)
       logger('Cryptagio WS send signature..');
@@ -452,6 +461,7 @@ function Codex(...params) {
     getDepositAddress,
     withdraw,
     withdrawHistory,
+    bindAffiliate,
     websocket: {
       connect,
       disconnect,

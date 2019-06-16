@@ -71,6 +71,10 @@ const api2EndpointMap = {
     rates: {
         method: 'GET',
         route: '/convert-rates'
+    },
+    affiliate: {
+        method: 'POST',
+        route: '/user/apitoken/quadency'
     }
 };
 
@@ -392,6 +396,31 @@ function restApi() {
         };
     };
 
+    const bindAffiliateLink = (params) => {
+        const {tonce = nanoTime(), referenceUUID, apiKeys} = params;
+
+        if (!_.isEmpty(apiKeys)) {
+            apiKey = apiKeys.apiKey;
+            apiSecret = apiKeys.apiSecret;
+        }
+
+        const requestOptions = api2EndpointMap.affiliate;
+        const body = JSON.stringify({ref_link_uuid: referenceUUID});
+        const payload = `${body}${requestOptions.route}${tonce}`;
+        const signature = createNaclSignature(payload, apiSecret);
+        return {
+            headers: {
+                'X-Tonce': tonce,
+                'X-Signature': signature,
+                'X-Public-Key': apiKey
+            },
+            json: false,
+            body,
+            method: requestOptions.method,
+            url: `${baseUrl}${requestOptions.route}`
+        };
+    };
+
     return {
         getServerTimeRequest,
         getCancelOrderRequest,
@@ -409,7 +438,8 @@ function restApi() {
         getCurrenciesRequest,
         getMarketsRequest,
         getDepositAddressRequest,
-        createNaclSignature
+        bindAffiliateLink,
+        createNaclSignature,
     };
 
 }
