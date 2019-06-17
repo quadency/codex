@@ -128,6 +128,15 @@ function Codex(...params) {
     return JSON.parse(response);
   };
 
+  const getClosedOrders = async (market = undefined, status = undefined, side = undefined, type = undefined, limit = 500, from_time = undefined, to_time = undefined, page_token = undefined) => {
+    if (_.isEmpty(apiKeys.apiKey) || _.isEmpty(apiKeys.apiSecret))
+      throw new Error(`api keys are empty. Please call setApiKeys(apiKey, apiSecret)`);
+    const requestParams = {market, status, side, type, limit, from_time, to_time, page_token, apiKeys};
+    const request = restApi.getGetCloseOrdersRequest(requestParams);
+    const response = await executeCall(request);
+    return JSON.parse(response);
+  }
+
   const getBalances = async () => {
     if (_.isEmpty(apiKeys.apiKey) || _.isEmpty(apiKeys.apiSecret))
       throw new Error(`api keys are empty. Please call setApiKeys(apiKey, apiSecret)`);
@@ -458,6 +467,7 @@ function Codex(...params) {
     getTrades,
     getMyTrades,
     getOrders,
+    getClosedOrders,
     getInfo,
     placeOrders,
     getBalances,

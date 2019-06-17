@@ -28,6 +28,10 @@ const api2EndpointMap = {
         method: 'GET',
         route: '/orders/active'
     },
+    getClosedOrders: {
+        method: 'GET',
+        route: '/orders_history/my'
+    },
     balance: {
         method: 'GET',
         route: '/balances'
@@ -187,6 +191,29 @@ function restApi() {
 
         const body = querystring.stringify({
             market, status, side, type, limit, from_time, to_time, from_uuid, order
+        });
+
+        const payload = `${requestOptions.route}?${body}${tonce}`;
+        const signature = createNaclSignature(payload, apiKeys.apiSecret);
+
+        return {
+            headers: {
+                'X-Tonce': tonce,
+                'X-Signature': signature,
+                'X-Public-Key': apiKeys.apiKey
+            },
+            json: false,
+            method: requestOptions.method,
+            url: `${baseUrl}${requestOptions.route}?${body}`
+        };
+    };
+
+    const getGetCloseOrdersRequest = (params) => {
+        const requestOptions = api2EndpointMap.getClosedOrders;
+        const {tonce = nanoTime(), market, status, side, type, limit, from_time, to_time, apiKeys, page_token} = params;
+
+        const body = querystring.stringify({
+            market, status, side, type, limit, from_time, to_time, page_token
         });
 
         const payload = `${requestOptions.route}?${body}${tonce}`;
@@ -428,6 +455,7 @@ function restApi() {
         getGetTradesRequest,
         getGetMyTradesRequest,
         getGetOrdersRequest,
+        getGetCloseOrdersRequest,
         getPlaceOrdersRequest,
         getWithdrawRequest,
         getWithdrawHistoryRequest,
