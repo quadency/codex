@@ -383,7 +383,11 @@ function Codex(...params) {
       if (logger)
         logger('WS client is connected to', address);
       Codex.socketHeartbeatInterval = setInterval(() => {
-        wsClient.ping();
+        if(wsClient && wsClient.readyState === wsClient.OPEN){
+          wsClient.ping();
+        } else {
+          clearInterval(Codex.socketHeartbeatInterval);
+        }
       }, WS_PING_INTERVAL);
       authProcessor(wsClient);
       send({
