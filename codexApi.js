@@ -147,9 +147,9 @@ function Codex(...params) {
 
     return balances.map(assetBalance=>({
       asset: commonCurrencies[assetBalance.currency] ? commonCurrencies[assetBalance.currency] : assetBalance.currency,
-      free: (parseFloat(assetBalance.balance) - parseFloat(assetBalance.locked)).toString(),
+      free: assetBalance.balance,
       used: assetBalance.locked,
-      total: assetBalance.balance,
+      total: (parseFloat(assetBalance.balance) - parseFloat(assetBalance.locked)).toString(),
     }));
   };
 
