@@ -189,7 +189,8 @@ function Codex(...params) {
           amount: {
             min: 0.00000001,
             max: 10000000
-          }
+          },
+          price: {},
         },
       };
       return acc;
