@@ -17,16 +17,7 @@ const DEFAULT_OPTIONS = {
 const WS_PING_INTERVAL = 30000;
 const WS_RECONNECT_INTERVAL = 5000;
 
-let connection;
-let _channels = [];
-let wsUrl;
 
-let restApi;
-
-const apiKeys = {
-  apiKey: '',
-  apiSecret: '',
-};
 
 const commonCurrencies = {
   BCHABC: 'BCH',
@@ -43,6 +34,16 @@ function Codex(...params) {
 
   let wss = false;
   let wsClient = null;
+  let connection;
+  let _channels = [];
+  let wsUrl;
+
+  let restApi;
+
+  const apiKeys = {
+    apiKey: '',
+    apiSecret: '',
+  };
 
   const {apiKey, apiSecret, baseUrl = 'https://api.codex.one', logger = console.log} = params.length === 1
     ? params[0]
@@ -58,7 +59,6 @@ function Codex(...params) {
   }
 
   restApi = restApiModule(baseUrl);
-
   wsUrl = 'wss://' + url.parse(baseUrl).host + '/ws';
 
   async function executeCall(options) {
