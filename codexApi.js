@@ -182,6 +182,15 @@ function Codex(...params) {
           amount: cur.base_precision,
           price: cur.quote_precision,
         },
+        cost: {
+          min: 0.00000001
+        },
+        limits: {
+          price: {
+            min: 0.00000001,
+            max: 10000000
+          }
+        },
       };
       return acc;
     }, {});
