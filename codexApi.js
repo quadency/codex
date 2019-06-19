@@ -186,7 +186,7 @@ function Codex(...params) {
           min: 0.00000001
         },
         limits: {
-          price: {
+          amount: {
             min: 0.00000001,
             max: 10000000
           }
